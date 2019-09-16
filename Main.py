@@ -49,13 +49,16 @@ def takeTurn(player):
         if not validCard:
             print('You don\'t have that card!!')
             return takeTurn(player)
-    # Get the root
-    played = playedCard.split()[0]
+        else:
+            cards.append(validCard)
+    # Get the roots
+    played = [card.split()[0] for card in cards]
     # What player is said they are playing
     whatIsSaid = str(input('What do you say you played? Please write the value as shown above. Ex: 2, 5, Ace, Queen. \n'))
     # If the root and what is said are off set player cheated to true
-    if played != whatIsSaid:
-        player['cheated'] = True
+    for root in played:
+        if root != whatIsSaid:
+            player['cheated'] = True
     # Gets card as number
     whatIsSaid = cardToNumber[whatIsSaid]
     # If there was a last played card check to see if it fits
@@ -63,15 +66,15 @@ def takeTurn(player):
         # If its not 1 above or below the last card played, the player cheated
         if not whatIsSaid == lastPlayedCard-1 and not whatIsSaid ==  lastPlayedCard+1:
             player['cheated'] = True
-    # Find the card the player is playing
-    for card in player['hand']:
-        if str(card) == playedCard:
-            playedCard = card
-            break
-    # Add it to the deck
-    playedDeck.cards.append(playedCard)
-    # Remove it from their hand
-    player['hand'].remove(playedCard)
+    # Find the card the player is playing. Then:
+    for pCard in cards:
+        for card in player['hand']:
+            if str(card) == pCard:
+                # Add it to the deck
+                playedDeck.cards.append(card)
+                # Remove it from their hand
+                player['hand'].remove(card)
+                break
     # Return what player said they played
     return whatIsSaid
 
