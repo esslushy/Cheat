@@ -49,7 +49,7 @@ def takeTurn(player):
             if playedCard == str(card) and playedCard not in cards:
                 validCard = True
         if not validCard:
-            print('You don\'t have that card!!')
+            print(f'You don\'t have that card!!\nTry again and play cards you do have.')
             return takeTurn(player)
         else:
             cards.append(playedCard)
