@@ -45,7 +45,8 @@ def takeTurn(player):
         playedCard = str(input('What card will you play? Please write it as shown above.\n'))
         # Make sure card is valid
         for card in player['hand']:
-            if playedCard == str(card):
+            # If the card is in hand and not already chosen
+            if playedCard == str(card) and playedCard not in cards:
                 validCard = True
         if not validCard:
             print('You don\'t have that card!!')
