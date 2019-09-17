@@ -40,7 +40,8 @@ clear = lambda: print(chr(27) + "[2J")
 def takeTurn(player):
     cards = []
     print(player['hand'])
-    for _ in range(input('How many cards do you want to play? \n')):
+    numCards = int(input('How many cards do you want to play? \n'))
+    for _ in range(numCards):
         playedCard = str(input('What card will you play? Please write it as shown above.\n'))
         # Make sure card is valid
         for card in player['hand']:
@@ -50,7 +51,7 @@ def takeTurn(player):
             print('You don\'t have that card!!')
             return takeTurn(player)
         else:
-            cards.append(validCard)
+            cards.append(playedCard)
     # Get the roots
     played = [card.split()[0] for card in cards]
     # What player is said they are playing
@@ -66,7 +67,7 @@ def takeTurn(player):
         # If its not 1 above or below the last card played, the player cheated
         if not whatIsSaid == lastPlayedCard-1 and not whatIsSaid ==  lastPlayedCard+1:
             player['cheated'] = True
-    # Find the card the player is playing. Then:
+    # Find the card the player is playing. Then ...
     for pCard in cards:
         for card in player['hand']:
             if str(card) == pCard:
@@ -76,7 +77,7 @@ def takeTurn(player):
                 player['hand'].remove(card)
                 break
     # Return what player said they played
-    return whatIsSaid
+    return whatIsSaid, numCards
 
 numPlayers = int(input('How many players are playing: '))
 
@@ -107,29 +108,32 @@ winner = False
 while(not winner):
     for player in players:
         clear()
+        print(f'Player {player["num"]}\'s turn')
         if lastPlayedCard == -1:
             print('Play any card')
         else:
             print('Play a card one value above or below ' + numberToCard[lastPlayedCard])
-        lastPlayedCard = takeTurn(player)
+        lastPlayedCard, numCards = takeTurn(player)
         for p in players:
             # Skip if it is the same as the player who played the card
             if p is player: 
                 continue
             # Clear Screen
             clear()
+            print(f'Player {p["num"]}\'s guess')
+            print(f'Player {player["num"]} played {numCards} {numberToCard[lastPlayedCard]}(s)')
             print(p['hand'])
-            thinkCheating = input('Player %s, do you think player %s is cheating? (yes or no)\n' % (p['num'], player['num'])).lower()
+            thinkCheating = input(f'Player {p["num"]}, do you think player {player["num"]} is cheating? (yes or no)\n').lower()
             thinkCheating = thinkCheating == 'yes' or thinkCheating == 'y'# Makes true if yes otherwise false for no
             if thinkCheating:
                 if player['cheated']:
-                    print('Player %s did cheat. They get the deck.' % (player['num']))
+                    print(f'Player {player["num"]} did cheat. They get the deck.')
                     caught = True
                     player['hand'].extend(deck.cards)# Give player deck cards
                     playedDeck.cards = []# Empty deck
                     break # No longer need to continue for loop if already caught
                 else: # If they didn't cheat
-                    print('Player %s did not cheat. You get the deck.' % (player['num']))
+                    print(f'Player {player["num"]} did not cheat. You get the deck.')
                     p['hand'].extend(deck.cards)# Give accuser deck cards
                     playedDeck.cards = []# Empty deck
                     break # No longer need to continue if proven innocent
@@ -139,7 +143,7 @@ while(not winner):
         # If player's hand it empty at end of their turn they win
         if len(player['hand']) == 0:
                 winner = True
-                print('We have a winner!! %s' % player['num'])
+                print(f'We have a winner!! Player {player["num"]}')
                 break# Exit to while loop
         # Reset player states
         player['cheated'] = False
