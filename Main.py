@@ -53,6 +53,8 @@ def takeTurn(player):
             return takeTurn(player)
         else:
             cards.append(playedCard)
+        # Reset if card is valid
+        validCard = False
     # Get the roots
     played = [card.split()[0] for card in cards]
     # What player is said they are playing
