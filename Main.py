@@ -88,9 +88,12 @@ def takeTurn(player):
 def buildKnownCards(computer):
     # Empty known cards
     computer['knownCards'] = {}
+    # Set up each category
+    for i in range(1, 14):
+        computer['knownCards'][i] = 0
     # For each card increment number of them known by 1
     for card in computer['hand']:
-        computer['knownCards'][int(card.number)] += 1
+        computer['knownCards'][int(card.number)] = 1
 
 def takeRoboTurn(computer):
     cards = []
@@ -111,7 +114,7 @@ def takeRoboTurn(computer):
                 cards.append(card)
     else:
         # If computer has no cards just randomly play a fake card and lie.
-        if computer['knownCards'[lastPlayedCard - 1] < 4:
+        if computer['knownCards'][lastPlayedCard - 1] < 4:
             # If the computer know that there are less than 4 of those cards play a fake one
             playedCard = lastPlayedCard - 1
             cards.append(computer['hand'][0])
